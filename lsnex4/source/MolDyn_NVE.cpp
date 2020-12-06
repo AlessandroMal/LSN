@@ -8,6 +8,7 @@
 
 //domande: devo aggiungere tail correction?
 //vedi il problema della pressione
+//le ripartenze vanno implementate? io le ho lanciate manualmente nel numero che mi serviva
 
 using namespace std;
 
