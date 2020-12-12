@@ -279,13 +279,13 @@ void Measure(){ //Properties measurement
 }
 
 void datablocking(int nblocks){
+	ifstream data;
 	int L=nstep/nblocks; //occhio che nstep sia divisibile per nblocks
 	double sum,d;
 	vector<double> avinblock(nblocks);
 	string obs[m_props]={"epot","ekin","etot","temp","pres"};
 
 	for(auto el : obs){
-		ifstream data;
 		data.open("../data/measures/output_"+el+".dat");
 
 		for(int i=0;i<nblocks;i++){
