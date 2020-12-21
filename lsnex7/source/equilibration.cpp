@@ -1,14 +1,9 @@
 #include <iostream>
-#include <fstream>
-#include <ostream>
-#include <cmath>
-#include <iomanip>
 #include "Monte_Carlo_NVT.h"
-
 using namespace std;
-//muovo e basta per equilibrare
-int main(){ 
-  Input(); //Inizialization
+
+int main(){ //muovo e basta per equilibrare
+  Input();  //Inizialization
   for(int iblk=1; iblk <= nblk; ++iblk){ //Simulation
     for(int istep=1; istep <= nstep; ++istep){
       Move();

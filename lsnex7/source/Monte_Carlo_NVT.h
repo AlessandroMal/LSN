@@ -2,7 +2,13 @@
 #define __NVT__
 
 //Random numbers
+#include <iostream>
+#include <fstream>
+#include <ostream>
+#include <cmath>
+#include <iomanip>
 #include "random.h"
+using namespace std;
 int seed[4];
 Random rnd;
 
@@ -56,18 +62,18 @@ void Input(void)
   cout << "The program uses Lennard-Jones units " << endl;
 
 //Read seed for random numbers
-   int p1, p2;
-   ifstream Primes("Primes");
-   Primes >> p1 >> p2 ;
-   Primes.close();
+  int p1, p2;
+  ifstream Primes("../data/Primes");
+  Primes >> p1 >> p2 ;
+  Primes.close();
 
-   ifstream input("seed.in");
-   input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
-   rnd.SetRandom(seed,p1,p2);
-   input.close();
+  ifstream input("../data/seed.in");
+  input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
+  rnd.SetRandom(seed,p1,p2);
+  input.close();
   
 //Read input informations
-  ReadInput.open("input.dat");
+  ReadInput.open("../data/configurations/input.dat");
 
   ReadInput >> temp;
   beta = 1.0/temp;
@@ -119,7 +125,7 @@ void Input(void)
 
 //Read initial configuration
   cout << "Read initial configuration from file config.0 " << endl << endl;
-  ReadConf.open("config.0");
+  ReadConf.open("../data/configurations/config.0");
   for (int i=0; i<npart; ++i)
   {
     ReadConf >> x[i] >> y[i] >> z[i];
@@ -232,6 +238,12 @@ void Measure()
      dr = sqrt(dr);
 
 //update of the histogram of g(r)
+     for(int k=igofr; k<igofr+nbins; ++k)
+	     if(dr<(k-igofr+1)*bin_size){
+		     walker[k]+=2;
+		     walker[k]/=rho*npart*4*M_PI/3.*( pow( (k-igofr+1)*bin_size, 3) - pow( (k-igofr)*bin_size, 3) );
+		     break;
+	     }
 
      if(dr < rcut)
      {
@@ -242,7 +254,7 @@ void Measure()
        v += vij;
        w += wij;
      }
-    }          
+    }
   }
 
   walker[iv] = 4.0 * v;
@@ -293,10 +305,10 @@ void Averages(int iblk) //Print results for current block
     cout << "Block number " << iblk << endl;
     cout << "Acceptance rate " << accepted/attempted << endl << endl;
     
-    Epot.open("output.epot.0",ios::app);
-    Pres.open("output.pres.0",ios::app);
-    Gofr.open("output.gofr.0",ios::app);
-    Gave.open("output.gave.0",ios::app);
+    Epot.open("../data/measures/output.epot.0",ios::app);
+    Pres.open("../data/measures/output.pres.0",ios::app);
+  //  Gofr.open("../data/measures/output.gofr.0",ios::app);
+  //  Gave.open("../data/measures/output.gave.0",ios::app);
     
     stima_pot = blk_av[iv]/blk_norm/(double)npart + vtail; //Potential energy
     glob_av[iv] += stima_pot;
@@ -312,7 +324,6 @@ void Averages(int iblk) //Print results for current block
     Epot << setw(wd) << iblk <<  setw(wd) << stima_pot << setw(wd) << glob_av[iv]/(double)iblk << setw(wd) << err_pot << endl;
 //Pressure
     Pres << setw(wd) << iblk <<  setw(wd) << stima_pres << setw(wd) << glob_av[iw]/(double)iblk << setw(wd) << err_press << endl;
-
 //g(r)
 
     cout << "----------------------------" << endl << endl;
@@ -328,7 +339,7 @@ void ConfFinal(void)
   ofstream WriteConf;
 
   cout << "Print final configuration to file config.final " << endl << endl;
-  WriteConf.open("config.final");
+  WriteConf.open("../data/configurations/config.final");
   for (int i=0; i<npart; ++i)
   {
     WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
@@ -341,7 +352,7 @@ void ConfFinal(void)
 void ConfXYZ(int nconf){ //Write configuration in .xyz format
   ofstream WriteXYZ;
 
-  WriteXYZ.open("frames/config_" + to_string(nconf) + ".xyz");
+  WriteXYZ.open("../data/measures/frames/config_" + to_string(nconf) + ".xyz");
   WriteXYZ << npart << endl;
   WriteXYZ << "This is only a comment!" << endl;
   for (int i=0; i<npart; ++i){

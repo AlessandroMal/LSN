@@ -1,11 +1,16 @@
 CC = g++
 CFLAGS = -Wall -O3 --std=c++11
 
-Monte_Carlo_NVT.exe : Monte_Carlo_NVT.o random.o
-	$(CC) random.o Monte_Carlo_NVT.o -o Monte_Carlo_NVT.exe
-Monte_Carlo_NVT.o : Monte_Carlo_NVT.cpp
-	$(CC) -c Monte_Carlo_NVT.cpp -o Monte_Carlo_NVT.o $(CFLAGS)
+all: equilibration.exe ex1.exe
+equilibration.exe : equilibration.o random.o
+	$(CC) random.o equilibration.o -o equilibration.exe
+ex1.exe : ex1.o random.o
+	$(CC) random.o ex1.o -o ex1.exe
+equilibration.o : equilibration.cpp
+	$(CC) -c equilibration.cpp -o equilibration.o
+ex1.o : ex1.cpp
+	$(CC) -c ex1.cpp -o ex1.o $(CFLAGS)
 random.o : random.cpp random.h
 	$(CC) -c random.cpp -o random.o $(CFLAGS)
 clean :
-	rm *.o Monte_Carlo_NVT.exe
+	rm *.o *.exe
