@@ -43,8 +43,12 @@ vector<double> error( vector<double> v ){
 	vector<double> err(v.size());
 
 	for(unsigned int i=0; i<v.size(); i++){
-		err[i] = sqrt( mpq[i]-pow(mp[i],2) );
-		err[i] /= sqrt(i+1);
+		if(i==0){
+			err[i]=0;
+		}else{
+			err[i] = sqrt( mpq[i]-pow(mp[i],2) );
+			err[i] /= sqrt(i);
+		}
 	}
 	return err;
 }

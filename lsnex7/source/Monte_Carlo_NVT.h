@@ -21,7 +21,7 @@ double walker[m_props];
 // averages
 double blk_av[m_props],blk_norm,accepted,attempted;
 double glob_av[m_props],glob_av2[m_props];
-double stima_pot,stima_pres,err_pot,err_press,err_gdir;
+double stima_pot,stima_pres,err_pot,err_press,err_gdir[m_props];
 
 //configuration
 const int m_part=108;
@@ -307,8 +307,8 @@ void Averages(int iblk) //Print results for current block
     
     Epot.open("../data/measures/output.epot.0",ios::app);
     Pres.open("../data/measures/output.pres.0",ios::app);
-  //  Gofr.open("../data/measures/output.gofr.0",ios::app);
-  //  Gave.open("../data/measures/output.gave.0",ios::app);
+    Gofr.open("../data/measures/output.gofr.0",ios::app);
+    Gave.open("../data/measures/output.gave.0",ios::app);
     
     stima_pot = blk_av[iv]/blk_norm/(double)npart + vtail; //Potential energy
     glob_av[iv] += stima_pot;
@@ -319,13 +319,23 @@ void Averages(int iblk) //Print results for current block
     glob_av[iw] += stima_pres;
     glob_av2[iw] += stima_pres*stima_pres;
     err_press=Error(glob_av[iw],glob_av2[iw],iblk);
-
+    
+    for(int k=igofr; k<igofr+nbins; ++k){ //g(r)
+	    glob_av[k] += blk_av[k]/blk_norm;
+	    glob_av2[k] += pow(blk_av[k]/blk_norm, 2);
+	    err_gdir[k] = Error(glob_av[iv],glob_av2[iv],iblk);
+    }
+ 
 //Potential energy per particle
     Epot << setw(wd) << iblk <<  setw(wd) << stima_pot << setw(wd) << glob_av[iv]/(double)iblk << setw(wd) << err_pot << endl;
 //Pressure
     Pres << setw(wd) << iblk <<  setw(wd) << stima_pres << setw(wd) << glob_av[iw]/(double)iblk << setw(wd) << err_press << endl;
 //g(r)
-
+    for(int k=igofr; k<igofr+nbins; ++k){
+	    Gofr << setw(wd) << blk_av[k]/blk_norm << endl;
+	    Gave << setw(wd) << iblk <<  setw(wd) << glob_av[k]/(double)iblk << setw(wd) << err_gdir[k] << endl;
+    }
+    Gofr<<endl;
     cout << "----------------------------" << endl << endl;
 
     Epot.close();
