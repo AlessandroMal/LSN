@@ -12,6 +12,7 @@ int main()
       Move();
       Measure();
       Accumulate(); //Update block averages
+//      if(istep%(nstep/10)==0) cout<<istep*100./nstep<<"%"<<endl;
 //      if(istep%10 == 0){
 //        ConfXYZ(nconf);//Write actual configuration in XYZ format //Commented to avoid "filesystem full"! 
 //        nconf += 1;

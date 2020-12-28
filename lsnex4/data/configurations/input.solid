@@ -3,9 +3,9 @@
 1.1
 2.2
 0.0005
-10000
-1000
-1
+100
+5000
+5000
 1
 
   ReadInput >> temp;
@@ -13,7 +13,7 @@
   ReadInput >> rho;
   ReadInput >> rcut;
   ReadInput >> delta;
+  ReadInput >> nblk;
   ReadInput >> nstep;
   ReadInput >> iprint;
   ReadInput >> old;
-  ReadInput >> rescaling;
