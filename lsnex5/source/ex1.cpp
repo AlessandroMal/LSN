@@ -80,7 +80,7 @@ int main (int argc, char *argv[]){
 vector<double> blockaverage(vector<double> datas, int N, int d){
 //argomenti: dati da mediare, numero di blocchi, dimensione dello spazio
 //(l' ultimo mi serve se voglio generalizzare con cammini in altre dimensioni)
-	int L=datas.size()/3/N;
+	int L=datas.size()/d/N;
 	double sum;
 	vector<double> r(d);
 	vector<double> av(N);
