@@ -35,7 +35,7 @@ void initialize(){
 	m=1;
 
 	ifstream params;
-	params.open("../data/input.dat");
+	params.open("../data/inputVMC.dat");
 	params>>mu;
 	params>>sigma;
 	params>>delta;
@@ -45,8 +45,11 @@ void initialize(){
 	params.close();
 //	cout<<"Gaussians with mu="<<mu<<"    sigma="<<sigma<<endl;
 //	cout<<"total steps: "<<M<<"    nblocks: "<<nblk<<endl;
+//	mu=abs(mu); //operazione già fatta in annealing.py
+//	sigma=abs(sigma);
+//	delta=abs(delta);
 
-	if(printpsi==1){
+	if(printpsi==1){ //preparo istogramma
 		int nbins=200;
 		psihist.resize(nbins);
 		fill(psihist.begin(), psihist.end(), 0.);
@@ -103,11 +106,11 @@ double hamilt_psi(double x){
 }
 
 void printhisto(){
-//	unsigned int tot=0;
-//	for(auto el : psihist) tot+=el;
+	unsigned int tot=0;
+	for(auto el : psihist) tot+=el;
 
 	ofstream out;
 	out.open("../data/psi.out");
 	for(unsigned int i=0; i<psihist.size(); i++)
-		out<<x0+ (i+0.5)*bin_size<<" "<<double(psihist[i])/*(tot*bin_size)*/<<endl;
+		out<<x0+ (i+0.5)*bin_size<<" "<<double(psihist[i])/(tot*bin_size)<<endl;
 }

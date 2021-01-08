@@ -9,7 +9,7 @@ int main (/*int argc, char *argv[]*/){
    initialize();
    vector<double> meas;			//M punti generati dal Metropolis
    vector<double> av_meas(nblk);	//medie sui valori dei blocchi
-   int accrate=0;
+   int acc=0;
 
    //start
    double alfa;
@@ -18,7 +18,7 @@ int main (/*int argc, char *argv[]*/){
 
    double current= hamilt_psi(x)/psiTrial(x,0);
    double trial;
-   cout<<current<<endl;
+//   cout<<current<<endl;
 
    unsigned int bin;
    for(int i=1; i<=M; i++){
@@ -28,9 +28,9 @@ int main (/*int argc, char *argv[]*/){
 	   if( rnd.Rannyu()<alfa ){	//Acceptance
 		   current=trial;
 		   x=xtrial;
-		   accrate+=1;
+		   acc+=1;
 	   }
-	   if(i%M/200==0) cout<<current<<endl;
+//	   if(i%M/200==0) cout<<current<<endl;
 	   meas.push_back(current);
 	   //histo
 	   if(printpsi==1){
@@ -40,12 +40,17 @@ int main (/*int argc, char *argv[]*/){
 	   }
    }
 
-   cout<<"acceptance rate for energy simulation: "<<double(accrate)/M<<endl;
+//   cout<<"acceptance rate for energy simulation: "<<double(acc)/M<<endl;
 //   cout<<"----------------------------------"<<endl<<endl;
-   av_meas=blockaverage(meas,nblk);
-   for(auto el : meas) cout<<el<<endl;
-   stampadati(M/nblk,av_meas, "../data/H_av.dat");	//media progressiva
-   if(printpsi==1) printhisto();
+//   cout<<endl;
+   if(double(acc)/M >0.15 && double(acc)/M <0.85){
+	   av_meas=blockaverage(meas,nblk);
+	   //   for(auto el : meas) cout<<el<<endl;
+	   stampadati(M/nblk,av_meas, "../data/H_av.dat");	//media progressiva
+	   if(printpsi==1) printhisto();
+   }else{
+//	   cout<<"Warning for this run: acceptance rate out of bounds, no data printed"<<endl;
+   }
 
    rnd.SaveSeed();
    return 0;
