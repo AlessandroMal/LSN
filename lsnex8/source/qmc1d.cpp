@@ -186,21 +186,20 @@ double external_potential_second(double val)
 // The same applies to the variational Wave Function...
 // You can modify this function but don't forget
 // to modify its second derivative below!
-double variationalWaveFunction(double v)
+double variationalWaveFunction(double val)
 {
 	return 1.0;
-
-/*	double mu=0.799;
+/*
+	double mu=0.799;
 	double sigma=0.638;
 	double e_p=exp( -0.5*pow( (val+mu)/sigma, 2) );
 	double e_m=exp( -0.5*pow( (val-mu)/sigma, 2) );
 	return e_m+e_p;
 */
-
 	//return exp(-0.5*v*v);
 }
 
-double variationalWaveFunction_second(double v)
+double variationalWaveFunction_second(double val)
 {
 	return 0;
 /*
@@ -212,7 +211,6 @@ double variationalWaveFunction_second(double v)
 	double psi1= pow(sigma, -2) *( (mu-val)*psi-2*mu*e_p );
 	return pow(sigma, -2) *( (mu-val)*psi1 - psi + 2*mu*pow(sigma, -2)*(val+mu)*e_p );
 */
-
 	//return v*v*exp(-0.5*v*v) - exp(-0.5*v*v);
 }
 

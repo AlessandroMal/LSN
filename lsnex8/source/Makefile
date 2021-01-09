@@ -17,7 +17,7 @@ stattools.o : stattools.cpp stattools.h
 	$(CC) -c stattools.cpp -o stattools.o $(CFLAGS)
 
 clean :
-	rm *.o *.exe qmc1d potential.dat kinetic.dat probability.dat
+	rm *.o *.exe qmc1d
 
 #ex2.exe : ex2.o random.o stattools.o
 #	$(CC) random.o stattools.o ex2.o -o ex2.exe -O2 -larmadillo -llapack -lblas
