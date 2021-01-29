@@ -124,4 +124,33 @@ Random generaterng(){
 	} else cerr << "PROBLEM: Unable to open seed.in" << endl;
 
 	return rnd;
-}	
+}
+
+Random generaterng(int k){
+
+	Random rnd;
+
+	int seed[4];
+ 	int p1, p2;
+  	ifstream Primes("../data/Primes");
+  	if (Primes.is_open()){
+		for(int i=0; i<k; i++) Primes >> p1;
+		Primes >> p1 >> p2 ;
+  	} else cerr << "PROBLEM: Unable to open Primes" << endl;
+  	Primes.close();
+
+  	ifstream input("../data/seed.in");
+  	string property;
+  	if (input.is_open()){
+		while ( !input.eof() ){
+			input >> property;
+			if( property == "RANDOMSEED" ){
+				input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
+				rnd.SetRandom(seed,p1,p2);
+			}
+		}
+		input.close();
+	} else cerr << "PROBLEM: Unable to open seed.in" << endl;
+
+	return rnd;
+}

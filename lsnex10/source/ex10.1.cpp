@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include "random.h"
-#include "header.h"
+#include "header10.1.h"
 using namespace std;
 
 int main (/*int argc, char *argv[]*/){
@@ -26,7 +26,10 @@ int main (/*int argc, char *argv[]*/){
    double T=Tup;
    double deltaT=(Tup-Tlow)/Tstep;
    double r;
+   unsigned int acc;
+   Tup=1;
    while(T>Tlow){
+	   acc=0;
 	   for(unsigned int i=0; i<Nstep; i++){
 		   population[1]=duplicate_path(population[0]);
 		   r=rnd.Rannyu();
@@ -38,6 +41,7 @@ int main (/*int argc, char *argv[]*/){
 		   if(rnd.Rannyu()<p_Boltzmann(population[0],population[1],T)){
 			   delete population[0];
 			   population[0]=population[1];
+			   acc++;
 		   }else{
 			   delete population[1];
 		   }
@@ -48,8 +52,10 @@ int main (/*int argc, char *argv[]*/){
 		   	minl=r;
 		   }
 	   }
+	   if(int(Tup)%(Tstep/10)==0) cout<<"T="<<T<<";\t acc. rate: "<<double(acc)/Nstep<<endl;
 	   outfile<<T<<" "<<minl<<endl;
 	   T-=deltaT;
+	   Tup++;
    }
 
    cout<<"minimum population length vs T printed in ../data/SA_pathlength.dat"<<endl;

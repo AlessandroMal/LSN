@@ -26,5 +26,6 @@ public:
 };
 
 Random generaterng();
+Random generaterng(int);
 
 #endif // __Random__

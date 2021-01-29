@@ -3,21 +3,22 @@
 
 #include<vector>
 #include <cmath>
+#include <string>
 #include"random.h"
+#include"mpi.h"
 using namespace std;
 
-unsigned int Ncity;			//numero città
-unsigned int Nstep;			//step per ogni temperatura
-unsigned int Tstep;			//numero di temperature diverse nell'intervallo
-double Tup;				//lim sup T
-double Tlow;				//lim inf T
-vector<double> cities;			//coordinate xy città
-vector<unsigned int*> population;	//percorso
-Random rnd;
+unsigned int Ncity;		//numero città
+unsigned int Nstart_pop;	//popolazione iniziale
+unsigned int Ngen;		//numero generazioni
+unsigned int Nmerge;		//ogni quanti passi scambio best path
 
-vector<double> l;			//lunghezze path
+const double extinction_coeff=0.8;	//percentuale estinta per generazione
+vector<double> cities;			//coordinate xy città
+vector<unsigned int*> population;	//popolazione di percorsi
+vector<double> l;			//misure dei percorsi
 vector<double> l2;
-unsigned int Nstart_pop;		//numero di individui in popolazione
+Random rnd;
 
 void initialize();
 void place_on_circ(const double, const unsigned int);
@@ -37,12 +38,11 @@ void invert_mutation(unsigned int*);
 unsigned int BC_distance(unsigned int, unsigned int);
 unsigned int BC(unsigned int);
 void crossover(unsigned int);
-
-double p_Boltzmann(const unsigned int*, const unsigned int*, double);
+void merge_continent();
 
 void initialize(){
-	ifstream init("../data/initialize.dat");
-	init >> Ncity >> Tlow >> Tup >> Tstep >> Nstep ;
+	ifstream init("../data/initialize10.2.dat");
+	init >> Ncity >> Nstart_pop >> Ngen >> Nmerge;
 	init.close();
 }
 
@@ -274,10 +274,73 @@ void crossover(unsigned int newfromhere){
 	}
 }
 
-double p_Boltzmann(const unsigned int* current, const unsigned int* trial, double T){
-	double beta=1/T;
-	double b=exp( -beta*(compute_L(trial) - compute_L(current)) );
-	if(b>1) b=1;
-	return b;
+
+void merge_continent(){
+	int tag=1;
+	unsigned int ind_max=1;
+	double maxl=l[ind_max];
+
+	int size, rank;
+	MPI_Comm_size(MPI_COMM_WORLD, & size);
+	MPI_Comm_rank(MPI_COMM_WORLD, & rank);
+//	MPI_Status stat;
+
+	for(unsigned int i=0; i<population.size(); i++){
+		if(l[i]<maxl){
+			maxl=l[i];
+			ind_max=i;
+		}
+	}
+	delete population[ind_max];
+	population.erase(population.begin()+ind_max);
+	l.erase(l.begin()+ind_max);
+	l2.erase(l2.begin()+ind_max);
+
+	unsigned int ind_min=0;
+	double minl=l[ind_min];
+	for(unsigned int i=0; i<population.size(); i++)
+		if(l[i]<minl){
+			minl=l[i];
+			ind_min=i;
+		}
+
+	int r;
+	vector<int> to;
+	bool ok;
+	if(rank==0){
+		while(int(to.size())<size){ //funziona bene se i nodi rimangono pochi
+			ok=1;
+			r=rnd.Rannyu(0,size);
+			for(unsigned int j=0; j<to.size(); j++)
+				if(to[j]==r){
+					ok=0;
+					break;
+				}
+			if(ok) to.push_back(r);
+		}
+	}
+	if(rank!=0) to.resize(size);
+	MPI_Bcast(&to.front(), size, MPI_INTEGER, 0, MPI_COMM_WORLD);
+
+	vector<int> from;
+	while(int(from.size())<size)
+		for(unsigned int i=0; i<to.size(); i++)
+			if(to[i]==int(from.size())){
+				from.push_back(i);
+				break;
+			}
+
+	unsigned int* path=new unsigned int[Ncity-1];
+	if(rank!=to[rank]){
+		MPI_Send(population[ind_min], Ncity-1, MPI_INTEGER, to[rank], tag, MPI_COMM_WORLD);
+		MPI_Recv(path, Ncity-1, MPI_INTEGER, from[rank], tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	}else{
+		for(unsigned int i=0; i<Ncity-1; i++) path[i]=population[ind_min][i];
+	}
+
+	population.push_back(path);
+	l.push_back(compute_L(path));
+	l2.push_back(compute_L2(path));
 }
+
 #endif // __Header__
