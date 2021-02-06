@@ -274,7 +274,7 @@ void crossover(unsigned int newfromhere){
 	}
 }
 
-
+//merge tra informazioni dei nodi per parallel computing
 void merge_continent(){
 	int tag=1;
 	unsigned int ind_max=1;

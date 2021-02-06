@@ -1,1 +1,0 @@
-Il programma funziona, e' solo un po' lungo il tempo di computazione con i dati inseriti

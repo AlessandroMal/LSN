@@ -5,9 +5,6 @@
 #include"random.h"
 #include"stattools.h"
 
-//domande per galli:
-//chiarimenti su parallel rng: dove cambio i seed, quanti ne prende, cos'e` Primes, seed.i e .o
-
 using namespace std;
  
 int main (int argc, char *argv[]){

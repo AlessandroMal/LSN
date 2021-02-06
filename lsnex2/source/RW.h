@@ -1,7 +1,7 @@
 #include <vector>
 #include <cmath>
 #include "random.h"
-//using namespace std;
+using namespace std;
 
 Random rnd=generaterng();
 

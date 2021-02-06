@@ -4,7 +4,7 @@
 #include "random.h"
 #include "stattools.h"
 
-//domande galli: qui non uso blocchi, dovrei riprogrammare e fare prima tutti i primi passi, quindi seguire gli L randomwalk insieme
+//è l'unica in cui non uso blocchi, considero tutti i cammini come esperimenti differenti. Dovrei riprogrammare?
 
 int main (int argc, char *argv[]){
 	int nstep = 100;	//numero di passi nel RW
@@ -36,7 +36,6 @@ int main (int argc, char *argv[]){
 	}
 
 	for(int i=0; i<nstep; i++){
-		//considero tutti i cammini come esperimenti differenti
 		//Random walk cubic lattice
 		avr2[i] = avr2[i]/M;			//media degli r^2
 		mom2r2[i] = mom2r2[i]/M;		//media dei quadrati degli r^2

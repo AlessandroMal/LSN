@@ -6,9 +6,6 @@
 #include "random.h"
 #include "stattools.h"
 
-//domande per galli:
-//ma non potevo generare direttamente rng tra -1 e 1 per avere cos uniforme?
-
 double rigettocostheta(){   //funzione per ottenere un coseno casuale (uniforme)
 	double x;           //col metodo della generazione di punti nel quadrato
 	double y;           //di lato 2 e centrato nell'origine

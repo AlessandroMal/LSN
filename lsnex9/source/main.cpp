@@ -58,6 +58,7 @@ int main (/*int argc, char *argv[]*/){
 		   }
 	   }
 
+	   //stampo le media della meta migliore di popolazione
 	   sortedL=l;
 	   sort(sortedL.begin(), sortedL.end());
 	   sortedL2=l2;

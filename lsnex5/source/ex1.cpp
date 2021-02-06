@@ -7,9 +7,17 @@
 #include "stattools.h"
 #include "metropolis.h"
 
-//domande: T in A e' davvero simmetrico quindi?
-//devo implementare anche psi210 con accept rate 1/2 o posso lasciare mostrato cosi'?
+const double a0=1;
+//const double a0=5.29177772E-11;
+//lascio commentato se voglio le grandezze in unita' di raggio di bohr
 
+double pGS(vector<double> x){ //pdf che voglio campionare
+	return 1/(M_PI*pow(a0,3))*exp(-2/a0*sqrt(norm2(x)));
+}
+
+double p210(vector<double> x){ //pdf che voglio campionare
+	return pow(x[2],2)/(32*M_PI*pow(a0,5))*exp(-sqrt(norm2(x))/a0);
+}
 vector<double> blockaverage(vector<double>, int, int);
 void stampacoord(vector<double>, unsigned int, unsigned int, string);
 
@@ -23,7 +31,7 @@ int main (int argc, char *argv[]){
    vector<double> av_r(N);	//medie sui valori dei blocchi
 
 //restituisco gli M valori distribuiti con p(x) tramite algoritmo di Metropolis
-   r=metropolis(start, M, pGS, Tunif, Asimm);	//r medio del GS con T uniforme
+   r=metropolis(start, M, pGS, Tunif, a0*1.2, Asimm);	//r medio del GS con T uniforme
 
 //nell'ultima posizione ho salvato la frequenza di accettazione
    cout<<"acceptance rate for GS and unform T: "<<r.back()<<endl;
@@ -36,7 +44,7 @@ int main (int argc, char *argv[]){
    av_r.resize(0);
 
 //ripeto il procedimento per le altre simulazioni: stato eccitato e T gaussiano
-   r=metropolis(start, M, p210, Tunif, Asimm);
+   r=metropolis(start, M, p210, Tunif, a0*3.1, Asimm);
    cout<<"acceptance rate for (210) and unform T: "<<r.back()<<endl;
    r.pop_back();
    av_r=blockaverage(r,N,d);
@@ -45,7 +53,7 @@ int main (int argc, char *argv[]){
    r.resize(0);	
    av_r.resize(0);
 
-   r=metropolis(start, M, pGS, Tgauss, Asimm);
+   r=metropolis(start, M, pGS, Tgauss, a0*0.8, Asimm);
    cout<<"acceptance rate for GS and normal T: "<<r.back()<<endl;
    r.pop_back();
    av_r=blockaverage(r,N,d);
@@ -54,7 +62,7 @@ int main (int argc, char *argv[]){
    r.resize(0);	
    av_r.resize(0);
 
-   r=metropolis(start, M, p210, Tgauss, Asimm);
+   r=metropolis(start, M, p210, Tgauss, a0*2, Asimm);
    cout<<"acceptance rate for (210) and normal T: "<<r.back()<<endl;
    r.pop_back();
    av_r=blockaverage(r,N,d);
@@ -64,7 +72,7 @@ int main (int argc, char *argv[]){
    av_r.resize(0);
 
    start[0]=20;	//provo a vedere cosa succede con partenza in zona a p bassa
-   r=metropolis(start, M, pGS, Tunif, Asimm);
+   r=metropolis(start, M, pGS, Tunif, a0*1.2, Asimm);
    cout<<"acceptance rate for GS and uniform T with start far from origin: "<<r.back()<<endl;
    r.pop_back();
    av_r=blockaverage(r,N,d);
@@ -73,7 +81,7 @@ int main (int argc, char *argv[]){
    r.resize(0);	
    av_r.resize(0);
 
-   rnd.SaveSeed();
+   rnd.SaveSeed(); //rnd usato in metropolis.cpp
    return 0;
 }
 

@@ -29,6 +29,7 @@ double V(double);
 double hamilt_psi(double);
 void printhisto();
 
+//initialize parameters and simulation data
 void initialize(){
 	rnd=generaterng();
 	hbar=1;
@@ -97,15 +98,15 @@ double psiTrial(double x, int der){
 	return psi;
 }
 
-double V(double x){
+double V(double x){//potenziale
 	return x*x*(x*x - 2.5);
 }
 
-double hamilt_psi(double x){
+double hamilt_psi(double x){//calcolo di <H>
 	return -pow(hbar,2)/(2*m)*psiTrial(x,2) + V(x)*psiTrial(x,0);
 }
 
-void printhisto(){
+void printhisto(){//stampa funzione psi 
 	unsigned int tot=0;
 	for(auto el : psihist) tot+=el;
 

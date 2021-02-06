@@ -34,6 +34,7 @@ unsigned int BC_distance(unsigned int, unsigned int);
 unsigned int BC(unsigned int);
 void crossover(unsigned int);
 
+//genera coordinate casualmente su una circonferenza
 void place_on_circ(const double r, const unsigned int n){
 	double angle;
 	for(unsigned int i=0; i<n; i++){
@@ -43,6 +44,7 @@ void place_on_circ(const double r, const unsigned int n){
 	}
 }
 
+//genera coordinate su una circonferenza formando un poligono regolare
 void place_regular_polygon(const double r, const unsigned int n){
 	double step=2*M_PI/double(n);
 	for(unsigned int i=0; i<n; i++){
@@ -51,6 +53,7 @@ void place_regular_polygon(const double r, const unsigned int n){
 	}
 }
 
+//genera coordinate casualmente su in un quadrato centrato in zero
 void place_in_square(const double l, const unsigned int n){
 	for(unsigned int i=0; i<n; i++){
 		cities.push_back(rnd.Rannyu(-l/2,l/2));
@@ -58,10 +61,12 @@ void place_in_square(const double l, const unsigned int n){
 	}
 }
 
+//distanza al quadrato tra città
 double norm2(const unsigned int cit1, const unsigned int cit2){
 	return pow(cities[cit1*2]-cities[cit2*2], 2) + pow(cities[cit1*2+1]-cities[cit2*2+1], 2);
 }
 
+//genera un cammino casuale tra città 
 unsigned int* gen_path(){
 	vector<unsigned int> not_visited(Ncity-1);
 	for(unsigned int i=0; i<not_visited.size(); i++) not_visited[i]=i+1;
@@ -76,12 +81,14 @@ unsigned int* gen_path(){
 	return path;
 }
 
+//duplica un cammino
 unsigned int* duplicate_path(const unsigned int* path){
 	unsigned int* copypath=new unsigned int[Ncity-1];
 	for(unsigned int i=0; i<Ncity-1; i++) copypath[i]=path[i];
 	return copypath;
 }
 
+//computa lunghezza totale cammino
 double compute_L(const unsigned int* path){
 	double l=sqrt(norm2(0,path[0]));
 	for(unsigned int i=0; i<Ncity-2; i++) l+=sqrt(norm2(path[i],path[i+1]));
@@ -90,6 +97,7 @@ double compute_L(const unsigned int* path){
 	return l;
 }
 
+//computa somma dei quadrati delle lunghezze del cammino
 double compute_L2(const unsigned int* path){
 	double l2=norm2(0,path[0]);
 	for(unsigned int i=0; i<Ncity-2; i++) l2+=norm2(path[i],path[i+1]);
@@ -98,6 +106,7 @@ double compute_L2(const unsigned int* path){
 	return l2;
 }
 
+//selettore di elementi sotto la media (non scende sotto 5%)
 void selection_meanL(){
 	double av=0;
 	double elite=0.05*Nstart_pop;
@@ -114,6 +123,7 @@ void selection_meanL(){
 		}
 }
 
+//(anti)selettore proporzionale a L2
 void selection_p_propto_L2(){
 	double sum=0;
 	for(auto el : l2) sum+=el;
@@ -132,6 +142,7 @@ void selection_p_propto_L2(){
 	l2.erase(l2.begin()+counter-1);
 }
 
+//permutazioni tra due città
 void pair_perm_mutation(unsigned int* path){
 	unsigned int pos1=rnd.Rannyu(0,Ncity-1);
 	unsigned int pos2=rnd.Rannyu(0,Ncity-1);
@@ -142,7 +153,7 @@ void pair_perm_mutation(unsigned int* path){
 	path[pos2]=c1;
 }
 
-
+//shift tra blocchi
 void shift_mutation(unsigned int* path){
 	unsigned int begin=rnd.Rannyu(0,Ncity-1);	//posizione da cui shifto
 	unsigned int m=rnd.Rannyu(1,Ncity-1);		//numero città che shifto
@@ -173,6 +184,7 @@ void shift_mutation(unsigned int* path){
 	for(unsigned int i=0; i<rest.size(); i++) path[BC(begin+n+m+i)]=rest[i];	//incollo tutto il resto in path
 }
 
+//permutazioni tra blocchi
 void block_perm_mutation(unsigned int* path){
 	unsigned int pos1=rnd.Rannyu(0,Ncity-1);
 	unsigned int m=rnd.Rannyu(1,int(Ncity/2));	//block length
@@ -188,6 +200,7 @@ void block_perm_mutation(unsigned int* path){
 	for(unsigned int i=0; i<m; i++) path[BC(pos2+i)]=subvec1[i];
 }
 
+//inversione di un blocco
 void invert_mutation(unsigned int* path){
 	unsigned int begin=rnd.Rannyu(0,Ncity-1);	//posizione da cui parte il sottvettore
 	unsigned int m=rnd.Rannyu(0,Ncity-1);		//numero città che inverto (lunghezza sottovettore)
@@ -201,6 +214,7 @@ void invert_mutation(unsigned int* path){
 	for(unsigned int i=begin; i<begin+m; i++) path[BC(i)]=inv[i-begin];		//incollo in path
 }
 
+//distnza tra due posizioni all'interno del cammino (con BC)
 unsigned int BC_distance(unsigned int ind1, unsigned int ind2){
 	unsigned int d=abs(int(ind1)-int(ind2));
 	if(d > (Ncity-1)/2){
@@ -210,11 +224,13 @@ unsigned int BC_distance(unsigned int ind1, unsigned int ind2){
 	return d;
 }
 
+//boundary cond
 unsigned int BC(unsigned int ind){
 	if(ind>=Ncity-1) ind=ind%(Ncity-1);
 	return ind;
 }
 
+//crossover mutation
 void crossover(unsigned int newfromhere){
 	if(population.size()-newfromhere >=2){
 		unsigned int p1_ind=rnd.Rannyu(newfromhere, population.size());

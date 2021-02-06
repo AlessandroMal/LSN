@@ -5,7 +5,6 @@
 #include <iomanip>
 #include "Monte_Carlo_ISING_1D.h"
 
-//problemi: move 105, measure 157, U(0.5)=0.97414
 using namespace std;
 
 int main(){
@@ -154,8 +153,6 @@ void Measure(){
 	walker[ix] = beta * pow(m,2);		//suscettività
 	walker[im] = m;				//magnetizzazione
 
-	//u  /= (double)nspin;			//SBAGLIATO?
-	//u2 /= (double)nspin;
 	walker[ic] = beta*beta * (u2 - u*u);		//capacità termica
 
 	if(instant==1){
@@ -166,7 +163,7 @@ void Measure(){
 		Chi.open("../data/full_X.out", ios::app);
 
 		Ene<<walker[iu]/(double)nspin<<endl;
-		Heat<<walker[ic]/(double)nspin<<endl; //QUI
+		Heat<<walker[ic]/(double)nspin<<endl;
 		Mag<<walker[im]/(double)nspin<<endl;
 		Chi<<walker[ix]/(double)nspin<<endl;
 
@@ -215,7 +212,7 @@ void Averages(int iblk){ //Print results for current block
 	glob_av2[iu] += stima_u*stima_u;
 	err_u=Error(glob_av[iu],glob_av2[iu],iblk);
 
-	stima_c = blk_av[ic]/blk_norm/(double)nspin; //Heat QUI
+	stima_c = blk_av[ic]/blk_norm/(double)nspin; //Heat
 	glob_av[ic]  += stima_c;
 	glob_av2[ic] += stima_c*stima_c;
 	err_c=Error(glob_av[ic],glob_av2[ic],iblk);

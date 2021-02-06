@@ -1,2 +1,0 @@
-chiedi se hanno sesno le discrepanze trovate nei risultati tra le due simulazioni
-chiedi se bisogna lisciare le autocorrelazioni
